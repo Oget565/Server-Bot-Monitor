@@ -1,0 +1,10 @@
+services:
+  bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: server-bot-monitor-image
+    container_name: server-bot-monitor-container
+    restart: unless-stopped
+    env_file:
+      - .env
