@@ -1,0 +1,24 @@
+name: Bot Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Create .env file
+        run: |
+          echo "BOT_TOKEN=${{ secrets.BOT_TOKEN }}" > .env
+          echo "OWNER_ID=${{ secrets.OWNER_ID }}" >> .env
+
+      - name: Build and deploy
+        run: |
+          docker compose down
+          docker compose up -d
