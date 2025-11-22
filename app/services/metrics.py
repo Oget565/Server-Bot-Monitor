@@ -1,3 +1,6 @@
+import asyncio
+from app.services.clock import Clock
+from app.database.database import save_to_db
 import psutil
 p = psutil
 
@@ -23,7 +26,7 @@ class Resources:
                     self.cpu_temp = round(sum([c.current for c in cores]) / len(cores), 1)
                     break
 
-    async def pack_resources(self):
+    def pack_resources(self):
         resources = {
             'mem_total': self.mem_total,
             'mem_used': self.mem_used,
@@ -34,3 +37,17 @@ class Resources:
         }
 
         return resources
+
+async def wait_for_clock():
+    clock = Clock()
+    asyncio.create_task(clock.five_min_clock())
+
+    res = Resources()
+
+    while True:
+        await Clock.clock_event.wait()
+        Clock.clock_event.clear()  # Clear the event after processing
+        await res.get_resources()
+        data = res.pack_resources()
+        await save_to_db(data)
+        print("saved")

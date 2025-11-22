@@ -1,27 +1,48 @@
 import sqlite3
 import time
+from pathlib import Path
+import asyncio
+from concurrent.futures import ThreadPoolExecutor
 
-with sqlite3.connect('server_metrics.db') as connection:
-    cursor = connection.cursor()
+DB_PATH = Path(__file__).resolve().parent / 'server_metrics.db'
+DB_PATH.parent.mkdir(parents=True, exist_ok=True)
 
-    create_query = '''
-    CREATE TABLE IF NOT EXISTS Metrics (
-        timestamp INTEGER PRIMARY KEY,
-        cpu REAL,
-        ram REAL,
-        temp REAL
-    );
-    '''
-    cursor.execute(create_query)
+# Thread pool for async database operations
+_executor = ThreadPoolExecutor(max_workers=1)
 
-    ts = int(time.time())
-    metrics = (ts, '23.5', '45.7', '43.2')
+def _save_to_db_sync(data):
+    with sqlite3.connect(DB_PATH) as connection:
+        cursor = connection.cursor()
 
-    insert_query = '''
-    INSERT INTO Metrics (timestamp, cpu, ram, temp)
-    VALUES (?, ?, ?, ?);
-    '''
-    cursor.execute(insert_query, metrics)
-    connection.commit()
+        create_query = '''
+        CREATE TABLE IF NOT EXISTS Metrics (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            timestamp INTEGER NOT NULL,
+            mem_total REAL,
+            mem_used REAL,
+            mem_prcnt REAL,
+            cpu_prcnt REAL,
+            cpu_freq REAL,
+            cpu_temp REAL
+        );
+        '''
+        cursor.execute(create_query)
 
-print("Success")
+        ts = int(time.time())
+
+        insert_query = '''
+        INSERT INTO Metrics (timestamp, mem_total, mem_used, mem_prcnt, cpu_prcnt, cpu_freq, cpu_temp)
+        VALUES (?, ?, ?, ?, ?, ?, ?);
+        '''
+        params = (ts, data['mem_total'], data['mem_used'], data['mem_prcnt'],
+                  data['cpu_prcnt'], data['cpu_freq'], data['cpu_temp'])
+        cursor.execute(insert_query, params)
+        connection.commit()
+
+    print("Success")
+
+async def save_to_db(data):
+    """Async wrapper for database operations to avoid blocking the event loop"""
+    loop = asyncio.get_event_loop()
+    await loop.run_in_executor(_executor, _save_to_db_sync, data)
+
