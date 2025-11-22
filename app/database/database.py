@@ -39,10 +39,10 @@ def _save_to_db_sync(data):
         cursor.execute(insert_query, params)
         connection.commit()
 
-    print("Success")
+    print("Database updated")
 
 async def save_to_db(data):
-    """Async wrapper for database operations to avoid blocking the event loop"""
     loop = asyncio.get_event_loop()
     await loop.run_in_executor(_executor, _save_to_db_sync, data)
+    print("Database saved")
 

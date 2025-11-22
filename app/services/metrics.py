@@ -41,13 +41,14 @@ class Resources:
 async def wait_for_clock():
     clock = Clock()
     asyncio.create_task(clock.five_min_clock())
+    asyncio.create_task(clock.day_cycle_clock())
 
     res = Resources()
 
     while True:
-        await Clock.clock_event.wait()
-        Clock.clock_event.clear()  # Clear the event after processing
+        await Clock.five_min_event.wait()
+        Clock.five_min_event.clear()
         await res.get_resources()
         data = res.pack_resources()
         await save_to_db(data)
-        print("saved")
+        print("Data written")
