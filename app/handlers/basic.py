@@ -20,6 +20,7 @@ def register_basic_handlers(dp):
             "All of the available commands:\n"
             "/start - Starts the bot.\n"
             "/help - lists all of the available commands.\n"
+            "/now - Show server's live stats.\n"
         )
 
     @dp.message(~IsOwner())
