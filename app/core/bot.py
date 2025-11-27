@@ -1,3 +1,10 @@
+'''
+VALUES TO CHANGE WHEN IMPLEMENTING SETTINGS:
+readb.py > limit in read 24hr of data
+clock.py > day_cycle_clock() time
+clock.py > five_minute_clock trigger interval
+'''
+
 import asyncio
 import os
 from aiogram import Bot, Dispatcher
