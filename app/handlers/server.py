@@ -1,7 +1,12 @@
+from curses.ascii import islower
+import os
 from app.database.readb import read_latest
 from app.filters.owner import IsOwner
-from aiogram import types
+from app.graph.graph_24hr import graph_cpu_load
+from app.database.readb import read_latest_24hr
+from aiogram import types, Bot
 from aiogram.filters import Command
+from aiogram.types import FSInputFile
 import datetime
 
 def server_stats_commands(dp):
@@ -21,3 +26,18 @@ def server_stats_commands(dp):
             )
         else:
             await message.answer("No metrics found.")
+
+    @dp.message(Command("cpu_graph"), IsOwner())
+    async def cpu_graph_img(message: types.Message):
+        data = await read_latest_24hr()
+        graph_cpu_load(data)
+
+        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        img_path = os.path.join(base_dir, 'graph', 'cpu_load.png')
+
+        if not os.path.exists(img_path):
+            await message.answer(f"Error: Graph file not found at {img_path}")
+            return
+
+        img = FSInputFile(img_path)
+        await message.answer_photo(photo=img, caption="Graph over the last 24 hrs")

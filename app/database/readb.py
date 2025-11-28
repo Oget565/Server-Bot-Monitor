@@ -32,8 +32,8 @@ LIMIT 1;
 LATEST_24HR_ROW_SQL = '''
 SELECT timestamp, mem_total, mem_used, mem_prcnt, cpu_prcnt, cpu_freq, cpu_temp
 FROM Metrics
-ORDER BY timestamp DESC
-LIMIT 288;
+WHERE timestamp >= ?
+ORDER BY timestamp ASC;
 '''
 
 def _read_latest_sync():
@@ -46,11 +46,12 @@ def _read_latest_sync():
         return dict(row) if row else None
 
 def _read_latest_sync_24hr():
+    twenty_four_hours_ago = int(time.time()) - (24 * 60 * 60)
     with sqlite3.connect(DB_PATH) as connection:
         connection.row_factory = sqlite3.Row
         cursor = connection.cursor()
         cursor.execute(CREATE_TABLE_SQL)
-        cursor.execute(LATEST_24HR_ROW_SQL)
+        cursor.execute(LATEST_24HR_ROW_SQL, (twenty_four_hours_ago,))
         rows = cursor.fetchall()
         return [dict(row) for row in rows] if rows else None
 
