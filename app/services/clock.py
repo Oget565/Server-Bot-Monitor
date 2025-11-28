@@ -1,5 +1,6 @@
 import asyncio
 import datetime
+from zoneinfo import ZoneInfo
 
 class Clock:
     five_min_event = asyncio.Event()
@@ -14,8 +15,9 @@ class Clock:
             print("Five minute clock triggered")
 
     async def day_cycle_clock(self):
+        tz = ZoneInfo("America/New_York")
         while True:
-            now = datetime.datetime.now()
+            now = datetime.datetime.now(tz)
             print(now)
             wakeup = now.replace(hour=8, minute=00, second=0, microsecond=0)
 
