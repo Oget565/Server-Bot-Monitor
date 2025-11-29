@@ -35,11 +35,14 @@ def graph_cpu_load(db_report):
     plt.ylabel("Load")
     plt.plot(averaged_time, averaged_load, linewidth=2, marker='o', markersize=4)
 
-    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
-
     now = datetime.datetime.now()
-    twenty_four_hours_ago = now - datetime.timedelta(hours=24)
-    plt.xlim(twenty_four_hours_ago, now)
+    now_rounded = now.replace(minute=0, second=0, microsecond=0) + datetime.timedelta(hours=1)
+    twenty_four_hours_ago = (now - datetime.timedelta(hours=24)).replace(minute=0, second=0, microsecond=0)
+
+    plt.xlim(twenty_four_hours_ago, now_rounded)
+
+    plt.gca().xaxis.set_major_locator(mdates.HourLocator(interval=2))
+    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
 
     plt.gcf().autofmt_xdate()
     plt.grid(True, alpha=0.3)
