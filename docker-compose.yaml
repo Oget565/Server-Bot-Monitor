@@ -11,5 +11,3 @@ services:
     volumes:
       - ./data:/app/database
       - ./graphs:/app/graph
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro

@@ -1,5 +1,6 @@
 from curses.ascii import islower
 import os
+import pytz
 from app.database.readb import read_latest
 from app.filters.owner import IsOwner
 from app.graph.graph_24hr import graph_cpu_load
@@ -13,7 +14,8 @@ def server_stats_commands(dp):
     @dp.message(Command("now"), IsOwner())
     async def stats_now(message: types.Message):
         metrics = await read_latest()
-        time = datetime.datetime.fromtimestamp(metrics['timestamp'])
+        tz = pytz.timezone('America/New_York')
+        time = datetime.datetime.fromtimestamp(metrics['timestamp'], tz=tz)
 
         if metrics:
             await message.answer(
