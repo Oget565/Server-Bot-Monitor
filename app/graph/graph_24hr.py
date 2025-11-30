@@ -25,7 +25,7 @@ def graph_cpu_load(db_report):
     plt.plot(time, load, linewidth=1.5)
     plt.xlim(window_start, now)
 
-    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
+    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%H:%M', tz=tz))
     plt.gca().xaxis.set_major_locator(mdates.HourLocator(interval=2))
     plt.gcf().autofmt_xdate()
 
