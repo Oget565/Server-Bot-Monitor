@@ -11,7 +11,7 @@ class Clock:
             self.five_min_event.set()
             await asyncio.sleep(1)
             self.five_min_event.clear()
-            await asyncio.sleep(20)
+            await asyncio.sleep(300)
             print("Five minute clock triggered")
 
     async def day_cycle_clock(self):

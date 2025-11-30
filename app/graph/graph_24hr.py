@@ -1,17 +1,19 @@
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import datetime
+import pytz
 import os
 
 def graph_cpu_load(db_report):
-    now = datetime.datetime.now()
+    tz = pytz.timezone('America/New_York')
+    now = datetime.datetime.now(tz=tz)  # ← Add timezone here
     window_start = now - datetime.timedelta(hours=24)
 
     time = []
     load = []
 
     for entry in db_report:
-        dt = datetime.datetime.fromtimestamp(entry['timestamp'])
+        dt = datetime.datetime.fromtimestamp(entry['timestamp'], tz=tz)
         time.append(dt)
         load.append(entry['cpu_prcnt'])
 
@@ -28,7 +30,6 @@ def graph_cpu_load(db_report):
     plt.gcf().autofmt_xdate()
 
     plt.grid(True, alpha=0.5, color='gray')
-    #plt.ylim(0, 100)
 
     script_dir = os.path.dirname(os.path.abspath(__file__))
     save_path = os.path.join(script_dir, 'cpu_load.png')

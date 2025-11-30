@@ -26,6 +26,7 @@ pydantic_core==2.33.2
 pyparsing==3.2.5
 python-dateutil==2.9.0.post0
 python-dotenv==1.2.1
+pytz==2025.2
 schedule==1.2.2
 six==1.17.0
 typing-inspection==0.4.2
