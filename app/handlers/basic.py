@@ -21,6 +21,7 @@ def register_basic_handlers(dp):
             "/start - Starts the bot.\n"
             "/help - lists all of the available commands.\n"
             "/now - Show server's live stats.\n"
+            "/cpu_graph - Shows graph of CPU % over the last 24 hrs."
         )
 
     @dp.message(~IsOwner())
