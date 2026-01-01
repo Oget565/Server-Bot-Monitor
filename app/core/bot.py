@@ -13,6 +13,7 @@ from app.handlers.basic import register_basic_handlers
 from app.handlers.schedule import send_report_24hr
 from app.handlers.server import server_stats_commands
 from app.services.metrics import wait_for_clock
+from app.settings.settings import settings_commands
 from app.services.clock import Clock
 
 async def main():
@@ -21,6 +22,7 @@ async def main():
 
     register_basic_handlers(dp)
     server_stats_commands(dp)
+    settings_commands(dp)
 
     clock = Clock()
     clock_task = asyncio.create_task(clock.day_cycle_clock())
