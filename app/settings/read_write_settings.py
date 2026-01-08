@@ -1,18 +1,20 @@
 import json
 
-def read_settings(val):
-    with open('settings.json', 'r') as f:
-        data = json.load(f)
-        print(data[val])
+class Settings():
+    def __init__(self):
+        pass
 
-def write_settings(item, val):
-    with open('settings.json', 'r') as f:
-        data = json.load(f)
+    def read_settings(self, val):
+        with open('settings.json', 'r') as f:
+            data = json.load(f)
+            print(data[val])
 
-    data[item] = val
-    
-    with open('settings.json', 'w') as f:
-        json.dump(data, f, indent=4)
+    def write_settings(self, item, val):
+        with open('settings.json', 'r') as f:
+            data = json.load(f)
 
-read_settings("timezone")
-write_settings("update_interval", 5)
+        data[item] = val
+        
+        with open('settings.json', 'w') as f:
+            json.dump(data, f, indent=4)
+
