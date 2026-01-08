@@ -23,7 +23,7 @@ def settings_commands(dp):
     async def get_keyboard(message: types.Message):
         await message.reply("Settings are working", reply_markup=keyboard)
 
-    @dp.callback.query_handler(text=['interval_call', 'timezone_call'])
+    @dp.callback_query(lambda call: call.data in ['interval_call', 'timezone_call'])
     async def callback_handler(call: types.CallbackQuery, state: FSMContext):
         if call.data == "interval_call":
             await call.message.answer("Enter the interval value in minutes")
@@ -33,15 +33,14 @@ def settings_commands(dp):
             await call.message.answer("Enter yout timezone location in America/New_York format")
             await state.set_state(SettingsStates.waiting_for_timezone)
 
-    @dp.message(SettingsStates.waiting_for_interval)
+    @dp.message(SettingsStates.waiting_for_interval, IsOwner())
     async def process_interval(message: types.Message, state: FSMContext):
         interval_val = message.text
         sett.write_settings("update_interval", interval_val)
         await state.clear()
 
-    @dp.message(SettingsStates.waiting_for_timezone)
+    @dp.message(SettingsStates.waiting_for_timezone, IsOwner())
     async def process_timezone(message: types.Message, state: FSMContext):
         timezone_val = message.text
         sett.write_settings("timezone", timezone_val)
         await state.clear()
-        
