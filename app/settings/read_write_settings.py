@@ -11,7 +11,7 @@ class Settings():
     def read_settings(self, val):
         with open(SETTINGS_PATH, 'r') as f:
             data = json.load(f)
-            print(data[val])
+            return data[val]
 
     def write_settings(self, item, val):
         with open(SETTINGS_PATH, 'r') as f:

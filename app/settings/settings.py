@@ -3,9 +3,9 @@ from aiogram.filters import Command
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
-import asyncio
 from app.filters.owner import IsOwner
 from app.settings.read_write_settings import Settings
+import asyncio
 
 sett = Settings()
 

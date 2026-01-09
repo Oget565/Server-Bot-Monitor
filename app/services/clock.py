@@ -1,6 +1,9 @@
 import asyncio
 import datetime
 from zoneinfo import ZoneInfo
+from app.settings.read_write_settings import Settings
+
+sett = Settings()
 
 class Clock:
     five_min_event = asyncio.Event()
@@ -11,15 +14,20 @@ class Clock:
             self.five_min_event.set()
             await asyncio.sleep(1)
             self.five_min_event.clear()
-            await asyncio.sleep(300)
+            sleep_time = int(sett.read_settings("update_interval")) * 60
+            await asyncio.sleep(sleep_time)
             print("Five minute clock triggered")
 
     async def day_cycle_clock(self):
-        tz = ZoneInfo("America/New_York")
+        tz = ZoneInfo(sett.read_settings("timezone"))
         while True:
             now = datetime.datetime.now(tz)
             print(now)
-            wakeup = now.replace(hour=8, minute=00, second=0, microsecond=0)
+
+            time = sett.read_settings("notification_time")
+            hour, minute = time.split(":")
+
+            wakeup = now.replace(hour=int(hour), minute=int(minute), second=0, microsecond=0)
 
             if now >= wakeup:
                 wakeup += datetime.timedelta(days=1)
