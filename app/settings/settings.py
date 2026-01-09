@@ -12,11 +12,13 @@ sett = Settings()
 keyboard_builder = InlineKeyboardBuilder()
 keyboard_builder.button(text="Update Interval", callback_data="interval_call")
 keyboard_builder.button(text="Timezone Region", callback_data="timezone_call")
+keyboard_builder.button(text="Notification Time", callback_data="notification_call")
 keyboard = keyboard_builder.as_markup(row_width=2)
 
 class SettingsStates(StatesGroup):
     waiting_for_interval = State()
     waiting_for_timezone = State()
+    waiting_for_notification = State()
 
 def settings_commands(dp):
     @dp.message(Command("settings"), IsOwner())
@@ -33,6 +35,10 @@ def settings_commands(dp):
             await call.message.answer("Enter yout timezone location in America/New_York format")
             await state.set_state(SettingsStates.waiting_for_timezone)
 
+        if call.data == "notification_call":
+            await call.message.answer("Enter the time of daily notification in 8:00, 16:00, 22:00 format")
+            await state.set_state(SettingsStates.waiting_for_notification)
+
     @dp.message(SettingsStates.waiting_for_interval, IsOwner())
     async def process_interval(message: types.Message, state: FSMContext):
         interval_val = message.text
@@ -43,4 +49,10 @@ def settings_commands(dp):
     async def process_timezone(message: types.Message, state: FSMContext):
         timezone_val = message.text
         sett.write_settings("timezone", timezone_val)
+        await state.clear()
+
+    @dp.message(SettingsStates.waiting_for_timezone, IsOwner())
+    async def process_notification(message: types.Message, state: FSMContext):
+        notification_val = message.text
+        sett.write_settings("notification_time", notification_val)
         await state.clear()
