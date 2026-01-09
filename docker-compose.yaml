@@ -11,3 +11,4 @@ services:
     volumes:
       - ./data:/app/database
       - ./graphs:/app/graph
+      - ./settings:/app/settings

@@ -5,16 +5,19 @@ from app.database.readb import read_latest
 from app.filters.owner import IsOwner
 from app.graph.graph_24hr import graph_cpu_load
 from app.database.readb import read_latest_24hr
+from app.settings.read_write_settings import Settings
 from aiogram import types, Bot
 from aiogram.filters import Command
 from aiogram.types import FSInputFile
 import datetime
 
+sett = Settings()
+
 def server_stats_commands(dp):
     @dp.message(Command("now"), IsOwner())
     async def stats_now(message: types.Message):
         metrics = await read_latest()
-        tz = pytz.timezone('America/New_York')
+        tz = pytz.timezone(sett.read_settings("timezone"))
         time = datetime.datetime.fromtimestamp(metrics['timestamp'], tz=tz)
 
         if metrics:
