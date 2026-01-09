@@ -1,5 +1,5 @@
 {
-    "update_interval": 5,
+    "update_interval": "5",
     "timezone": "America/New_York",
     "notification_time": "8:00"
 }
