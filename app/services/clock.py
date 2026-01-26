@@ -14,13 +14,14 @@ class Clock:
             self.five_min_event.set()
             await asyncio.sleep(1)
             self.five_min_event.clear()
+
             sleep_time = int(sett.read_settings("update_interval")) * 60
             await asyncio.sleep(sleep_time)
             print("Five minute clock triggered")
 
     async def day_cycle_clock(self):
-        tz = ZoneInfo(sett.read_settings("timezone"))
         while True:
+            tz = ZoneInfo(sett.read_settings("timezone"))
             now = datetime.datetime.now(tz)
             print(now)
 
